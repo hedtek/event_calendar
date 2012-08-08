@@ -160,7 +160,7 @@ module EventCalendar
       # go through a week at a time, until we reach the end of the month
       while(last_day_of_week <= last_day_of_cal)
         cal << %(<div class="ec-row" style="top: #{top}px; height: #{row_heights[row_num]}px;">)
-        top += row_heights[row_num] +12
+        top += row_heights[row_num]
 
         # this weeks background table
         cal << %(<table class="ec-row-bg" cellpadding="0" cellspacing="0">)
@@ -340,7 +340,7 @@ module EventCalendar
         num_event_rows = [num_event_rows, num_events].max
         # if we reached the end of the week, calculate this row's height
         if index % 7 == 0
-          total_event_height = options[:event_height] + options[:event_margin]
+          total_event_height = options[:event_height] + options[:event_margin] + 6
           calc_row_height = (num_event_rows * total_event_height) + options[:day_nums_height] + options[:event_margin]
           row_height = [min_height, calc_row_height].max
           row_heights << row_height
