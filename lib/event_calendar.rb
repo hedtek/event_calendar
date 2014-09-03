@@ -18,13 +18,13 @@ module EventCalendar
 
     # For the given month, find the start and end dates
     # Find all the events within this range, and create event strips for them
-    def event_strips_for_month(shown_date, first_day_of_week=0, sporting_sql_ids)
+    def event_strips_for_month(shown_date, first_day_of_week=0)
       if first_day_of_week.is_a?(Hash)
         # find_options.merge!(first_day_of_week)
         first_day_of_week =  0
       end
       strip_start, strip_end = get_start_and_end_dates(shown_date, first_day_of_week)
-      events = events_for_date_range(strip_start, strip_end, sporting_sql_ids)
+      events = events_for_date_range(strip_start, strip_end)
       event_strips = create_event_strips(strip_start, strip_end, events)
       event_strips
     end
@@ -48,14 +48,8 @@ module EventCalendar
     end
 
     # Get the events overlapping the given start and end dates
-    def events_for_date_range(start_d, end_d, sporting_sql_ids)
-      self.where([ "(? <= #{self.quoted_table_name}.#{self.end_at_field}) AND (#{self.quoted_table_name}.#{self.start_at_field}< ?)", start_d.to_time.utc, end_d.to_time.utc ]).order("#{self.quoted_table_name}.#{self.start_at_field} ASC").where("sporting_events.id IN (#{sporting_sql_ids})").joins(:event)
-
-      # self.scoped(find_options).find(
-      #   :all,
-      #   :conditions => ,
-      #   :order =>
-      # )
+    def events_for_date_range(start_d, end_d)
+      self.where([ "(? <= #{self.quoted_table_name}.#{self.end_at_field}) AND (#{self.quoted_table_name}.#{self.start_at_field}< ?)", start_d.to_time.utc, end_d.to_time.utc ]).order(self.start_at_field => :asc)
     end
 
     # Create the various strips that show events.
